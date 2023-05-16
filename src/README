@@ -1,0 +1,35 @@
+omriaviv
+315817403
+
+1. The plan was to make as few changes as possible from the original 3.1 given API.
+   Besides that, Since I couldn't make to collision strategy as an interface (according to a forum message,
+   all collision strategies were created as class that inherit the basic normal behavior of destroying the
+   brick when collided with.
+   I tried also to make as least classes as possible, so there is no puck class. Its simply a ball with a
+   boolean indicator of "puck-ness", and a different source for the image reader. For this, I needed to add
+   this indicator to the constructor. Plus,
+   I thought its more accurate to have the game manager control the ball speed, and not the ball itself,
+   So the ball constructor also gets it's speed from the game manager.
+
+
+2. I chose the Factory design pattern for determining what collision strategy to apply to each brick.
+   I think this is the easiest way to "compress" all the mess into one place, plus it makes it easy to add
+   new behaviours - just add another case to the switch statement (and increase the total number of
+   behaviours, which in my program is a constant for readability)
+
+
+3. To limit the maximum number of behaviours a single brick can get, I simply created an array of 3
+   strategies (each of the strategy is a sub-class of CollisionStrategy, which is the "normal" behaviour.
+   then, i used the factory to apply a behaviour on the first collisionStrategy in the array.
+   if the chosen strategy was the double behaviour, i called the factory function twice more - to create the
+   double behaviour. If on the either on of these calls the double behaviour was rolled again - i did the
+   same thing, but prevented from the double behaviour from being rolled again (the double behaviour is the
+   last case in the random range - I decrease this range by 1, so theis behaviour cannot be selected by my
+   random behaviour selector.
+
+
+4. As written above, each brick has an array of CollisionStrategies, which may contain null at some of it's
+   indexes. I created a for loop that on ball-brick collision, executes the behaviour of the relevant
+   CollisionStrategy, if it's not null (e.g if only 1 behaviour exists, the array indexes 1 and 2 are null).
+   This "execution" for loop runs on the CollisionStrategies array LENGTH, hence just
+   changing it's length (by changing the constant) will be enough to hold more than 3 behaviours.
